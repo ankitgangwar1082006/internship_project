@@ -15,6 +15,10 @@ const api = axios.create({
 // ── Request Interceptor (auto attach token) ────────────────────
 api.interceptors.request.use(
   (config) => {
+    // In Vercel we use baseURL "/api". Avoid generating "/api/api/*".
+    if (BASE_URL === "/api" && typeof config.url === "string" && config.url.startsWith("/api/")) {
+      config.url = config.url.replace(/^\/api/, "");
+    }
     const token = localStorage.getItem("access_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

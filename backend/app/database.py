@@ -8,9 +8,17 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
-    local_db = Path(__file__).resolve().parents[1] / "smartcampus.db"
+    # Vercel serverless filesystem is read-only except /tmp.
+    if os.getenv("VERCEL"):
+        local_db = Path("/tmp/smartcampus.db")
+    else:
+        local_db = Path(__file__).resolve().parents[1] / "smartcampus.db"
     DATABASE_URL = f"sqlite:///{local_db.as_posix()}"
     print(f"INFO: DATABASE_URL not set. Falling back to {DATABASE_URL}")
+
+# Some providers still hand out postgres:// URLs; SQLAlchemy expects postgresql://.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 connect_args = {}
 if DATABASE_URL.startswith("sqlite"):
