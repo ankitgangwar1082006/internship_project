@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 
 function Signup() {
@@ -211,7 +211,7 @@ function Signup() {
 
             <p className="auth-footer">
               Already have an account?{" "}
-              <a onClick={() => navigate("/login")}>Sign in</a>
+              <Link to="/login">Sign in</Link>
             </p>
 
           </div>

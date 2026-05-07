@@ -15,9 +15,6 @@ function FacilitySearch() {
   const [buildingId, setBuildingId] = useState("");
   const [minCapacity, setMinCapacity] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Building list for filter dropdown
-  const [buildings, setBuildings] = useState([]);
   const [facilityTypeOptions, setFacilityTypeOptions] = useState([]);
   const [subtypeOptions, setSubtypeOptions] = useState({});
   const [formData, setFormData] = useState({
@@ -64,13 +61,6 @@ function FacilitySearch() {
       setLoading(true);
       const data = await facilityAPI.getAllFacilities();
       setFacilities(data);
-
-      // Extract unique buildings from facilities
-      const uniqueBuildings = [
-        ...new Set(data.map((f) => JSON.stringify({ id: f.building_id }))),
-      ].map((b) => JSON.parse(b));
-      setBuildings(uniqueBuildings);
-
       setError(null);
     } catch (err) {
       setError(err.message || "Failed to load facilities");

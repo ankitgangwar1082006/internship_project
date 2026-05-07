@@ -274,20 +274,18 @@ function ManagerDashboard() {
           </div>
 
           <div className="stats-grid">
-            {[
-              { label: "Rooms Available",  value: "34", icon: "🏢", bg: "rgba(26,86,219,0.15)"  },
-              { label: "Pending Bookings", value: String(pendingCount), icon: "📅", bg: "rgba(14,159,110,0.15)" },
-              { label: "Open Tickets",     value: "9",  icon: "🔧", bg: "rgba(255,107,53,0.15)" },
-              { label: "Today's Events",   value: "6",  icon: "🗓️", bg: "rgba(124,58,237,0.15)" },
-            ].map((s) => (
-              <div className="stat-card" key={s.label}>
-                <div className="stat-icon" style={{ background: s.bg }}>{s.icon}</div>
-                <div>
-                  <div className="stat-value">{s.value}</div>
-                  <div className="stat-label">{s.label}</div>
+            {STATS.map((s) => {
+              const value = s.label === "Pending Bookings" ? String(pendingCount) : s.value;
+              return (
+                <div className="stat-card" key={s.label}>
+                  <div className="stat-icon" style={{ background: s.bg }}>{s.icon}</div>
+                  <div>
+                    <div className="stat-value">{value}</div>
+                    <div className="stat-label">{s.label}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <p className="modules-title">Manager Controls</p>

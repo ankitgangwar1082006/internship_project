@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { bookingAPI, facilityAPI } from "../services/api";
 import "../App.css";
@@ -11,11 +11,7 @@ function MyBookings() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [facilities, setFacilities] = useState({});
 
-  useEffect(() => {
-    fetchBookings();
-  }, [statusFilter]);
-
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
       const filters =
@@ -42,7 +38,7 @@ function MyBookings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter]);
 
   const handleCancel = async (bookingId) => {
     if (
@@ -83,6 +79,10 @@ function MyBookings() {
         return "rgba(255,255,255,0.05)";
     }
   };
+
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
 
   const getStatusTextColor = (status) => {
     switch (status) {

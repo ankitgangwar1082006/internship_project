@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { bookingAPI, facilityAPI } from "../services/api";
 import "../App.css";
@@ -26,8 +26,6 @@ function BookingForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [conflict, setConflict] = useState(false);
-
-  useState([]);
   const [bookingSubmitted, setBookingSubmitted] = useState(false);
   const [newBookingId, setNewBookingId] = useState(null);
 
@@ -39,11 +37,21 @@ function BookingForm() {
     setEndDate(today);
   }, []);
 
+  const loadFacilityDetails = useCallback(async () => {
+    try {
+      if (!selectedFacility) return;
+      const facility = await facilityAPI.getFacilityById(selectedFacility);
+      setFacilityDetails(facility);
+    } catch (err) {
+      console.error("Error loading facility:", err);
+    }
+  }, [selectedFacility]);
+
   useEffect(() => {
     if (selectedFacility) {
       loadFacilityDetails();
     }
-  }, [selectedFacility]);
+  }, [selectedFacility, loadFacilityDetails]);
 
   const fetchFacilities = async () => {
     try {
@@ -56,15 +64,6 @@ function BookingForm() {
     }
   };
 
-  const loadFacilityDetails = async () => {
-    try {
-      if (!selectedFacility) return;
-      const facility = await facilityAPI.getFacilityById(selectedFacility);
-      setFacilityDetails(facility);
-    } catch (err) {
-      console.error("Error loading facility:", err);
-    }
-  };
 
   const checkConflict = async () => {
     if (!selectedFacility || !startDate || !endDate || !startTime || !endTime) {

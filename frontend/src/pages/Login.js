@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 
 function Login() {
@@ -118,7 +118,7 @@ function Login() {
 
             <p className="auth-footer">
               Don't have an account?{" "}
-              <a onClick={() => navigate("/signup")}>Create one</a>
+              <Link to="/signup">Create one</Link>
             </p>
 
           </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { buildingAPI, campusAPI } from "../services/api";
 import "../App.css";
 
@@ -14,12 +14,7 @@ function Buildings() {
     campus_id: null,
   });
 
-  // Fetch all buildings and campuses on mount
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const [buildingsData, campusesData] = await Promise.all([
@@ -30,8 +25,8 @@ function Buildings() {
       setCampuses(campusesData);
       
       // Set default campus_id to first campus if not already set
-      if (campusesData.length > 0 && !formData.campus_id) {
-        setFormData(prev => ({ ...prev, campus_id: campusesData[0].id }));
+      if (campusesData.length > 0) {
+        setFormData((prev) => ({ ...prev, campus_id: prev.campus_id || campusesData[0].id }));
       }
       
       setError(null);
@@ -41,7 +36,12 @@ function Buildings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Fetch all buildings and campuses on mount
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleCreateOrUpdate = async (e) => {
     e.preventDefault();
